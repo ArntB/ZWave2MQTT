@@ -12,7 +12,7 @@
 var config = {};
 
 //Debug
-config.debug = false;
+config.debug = debug;
 
 // MQTT Message Broker 
 config.mqtt = {};
