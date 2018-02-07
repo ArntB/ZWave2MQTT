@@ -30,6 +30,6 @@ config.saveconfig = false;
 config.logging = false;
 config.consoleoutput = true;
 config.suppressrefresh = false;
-config.device = '/dev/ttyZwaveStick';
+config.device = '/dev/ttyS0';
 
 module.exports = config;
