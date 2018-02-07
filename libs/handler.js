@@ -52,7 +52,7 @@ exports.onEvent = function(nodeid, value) {
        // We prepare a message
         var command = constants.commandClass[32];
         var message = JSON.stringify({source: "zwave["+nodeid+"]", label: command, value: value, action : "Event", timestamp: Date.now()});
-        logger.debug("Publishing : " +  command + " => " + message);
+        //logger.debug("Publishing : " +  command + " => " + message);
 
         // We publish the value on the MQTT broker
         zwaveBus.client.publish(command, message);
@@ -79,7 +79,7 @@ exports.onValueChanged = function(nodeid, comclass, value) {
 	// We prepare a message
 	var command = constants.commandClass[comclass];
 	var message = JSON.stringify({source: "zwave["+nodeid+"]", label: value.label, value: value.value, action : "ValueChanged", timestamp: Date.now()});
-	logger.debug("Publishing : " +  command + " => " + message);
+	//logger.debug("Publishing : " +  command + " => " + message);
 	
 	// We publish the value on the MQTT broker
 	zwaveBus.client.publish(command, message);

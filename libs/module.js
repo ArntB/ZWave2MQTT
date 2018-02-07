@@ -39,7 +39,8 @@ Module.prototype = {
 		var self = this;
 		this.client = {
 			publish: function(cmd,msg){
-				self.logger.info("cmd:"+cmd+" msg: " + msg);
+				self.logger.info("CMD: " + cmd + " msg: " + msg);
+
 			},
 			end: function(){
 				self.logger.info("end");
