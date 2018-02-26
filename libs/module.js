@@ -37,18 +37,18 @@ Module.prototype = {
 		// Starting the service
 		console.info("-> Starting %s v%s", this.pjson.name, this.pjson.version);
 		var self = this;
-		this.client = {
-			publish: function(cmd,msg){
-				self.logger.info("CMD: " + cmd + " msg: " + msg);
+		// this.client = {
+		// 	publish: function(cmd,msg){
+		// 		self.logger.info("CMD: " + cmd + " msg: " + msg);
 
-			},
-			end: function(){
-				self.logger.info("end");
-			}
-		};//MOCK
+		// 	},
+		// 	end: function(){
+		// 		self.logger.info("end");
+		// 	}
+		// };//MOCK
 		// Create an MQTT client
-		// this.client = mqtt.connect(this.config.mqtt.uri, this.config.mqtt.options);
-		// console.info("Connecting to the MQTT Server : %s", this.config.mqtt.uri);
+		this.client = mqtt.connect(this.config.mqtt.uri, this.config.mqtt.options);
+		console.info("Connecting to the MQTT Server : %s", this.config.mqtt.uri);
 		
 		// // MQTT Connection
 		// this.client.on('connect', function(){
