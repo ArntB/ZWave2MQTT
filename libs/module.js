@@ -51,34 +51,34 @@ Module.prototype = {
 		console.info("Connecting to the MQTT Server : %s", this.config.mqtt.uri);
 		
 		// // MQTT Connection
-		// this.client.on('connect', function(){
-		// 	console.info("Connected to the MQTT broker");
-		// 	self.client.subscribe('command');
-		// });
+		this.client.on('connect', function(){
+			console.info("Connected to the MQTT broker");
+			self.client.subscribe('command');
+		});
 	
-		// // On message received on "command"	
-		// this.client.on('message', function (topic, message) {
-		// 	var command = JSON.parse(message.toString());
-		// 	console.log("Command received : %s %s %s %s %s", command.nodeid, command.commandclass, command.instance, command.index, command.value);
-		// 	callback(command);
-		// });
+		// On message received on "command"	
+		this.client.on('message', function (topic, message) {
+			var command = JSON.parse(message.toString());
+			console.log("Command received : %s %s %s %s %s", command.nodeid, command.commandclass, command.instance, command.index, command.value);
+			callback(command);
+		});
 
-		// // MQTT Close connection
-		// this.client.on('close', function(){
-		// 	console.warn("Disconnected from the MQTT broker");
-		// });
+		// MQTT Close connection
+		this.client.on('close', function(){
+			console.warn("Disconnected from the MQTT broker");
+		});
 
-		// // MQTT Offline
-		// this.client.on('offline', function(){
-		// 	console.warn("Going offline ...");
-		// });
+		// MQTT Offline
+		this.client.on('offline', function(){
+			console.warn("Going offline ...");
+		});
 
-		// // MQTT error
-		// this.client.on('error', function(error){
-		// 	console.error(error);
-		// });
+		// MQTT error
+		this.client.on('error', function(error){
+			console.error(error);
+		});
 		
-		//var self = this;
+		var self = this;
 		
 		// Cleaning resources on SIGINT
 		process.on('SIGINT', function(){

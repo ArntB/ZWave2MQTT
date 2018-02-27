@@ -18,69 +18,67 @@ var config = require('./config');
 var handler = require('./libs/handler');
 var mqtt = require('mqtt');
 
-var client = mqtt.connect(config.mqtt.uri, config.mqtt.options);
+// Initialize the module
+var zwaveBus = new module( __dirname);
 
 
-// // Initialize the module
-// var zwaveBus = new module( __dirname);
+// Initialize the Zwave connector
+var zwave = new OpenZwave({
+	SaveConfig : config.saveconfig,
+        Logging : config.logging,
+        ConsoleOutput : config.consoleoutput,
+        SuppressRefresh : config.suppressrefresh
+});
 
-// // Initialize the Zwave connector
-// var zwave = new OpenZwave({
-// 	SaveConfig : config.saveconfig,
-//         Logging : config.logging,
-//         ConsoleOutput : config.consoleoutput,
-//         SuppressRefresh : config.suppressrefresh
-// });
+// On new command handler
+var onCommand = function(command){
+	zwave.setValue(command.nodeid, command.commandclass, command.instance, command.index, command.value);
+}
 
-// // On new command handler
-// var onCommand = function(command){
-// 	zwave.setValue(command.nodeid, command.commandclass, command.instance, command.index, command.value);
-// }
+handler.init(zwaveBus);
+zwaveBus.start(onCommand);
 
-// handler.init(zwaveBus);
-// zwaveBus.start(onCommand);
+// Event 
+zwave.on('node event', handler.onEvent);
 
-// // Event 
-// zwave.on('node event', handler.onEvent);
+// The driver is ready
+zwave.on('driver ready', handler.onDriverReady);
 
-// // The driver is ready
-// zwave.on('driver ready', handler.onDriverReady);
+// The driver is failed
+zwave.on('driver failed', process.exit);
 
-// // The driver is failed
-// zwave.on('driver failed', process.exit);
+// A node has been added to the network
+zwave.on('node added', handler.onNodeAdded);
 
-// // A node has been added to the network
-// zwave.on('node added', handler.onNodeAdded);
+// A value has been added
+zwave.on('value added', handler.onValueAdded);
 
-// // A value has been added
-// zwave.on('value added', handler.onValueAdded);
+// A value has been changed
+zwave.on('value changed', handler.onValueChanged);
 
-// // A value has been changed
-// zwave.on('value changed', handler.onValueChanged);
+// A value has been removed
+zwave.on('value removed', handler.onValueRemoved);
 
-// // A value has been removed
-// zwave.on('value removed', handler.onValueRemoved);
+// A node is ready
+zwave.on('node ready', handler.onNodeReady);
 
-// // A node is ready
-// zwave.on('node ready', handler.onNodeReady);
+// A notification has been received
+zwave.on('notification', handler.onNotification);
 
-// // A notification has been received
-// zwave.on('notification', handler.onNotification);
+// The scan is complete
+zwave.on('scan complete', function() {
+	handler.onScanComplete();
+});
 
-// // The scan is complete
-// zwave.on('scan complete', function() {
-// 	handler.onScanComplete();
-// });
+process.removeAllListeners('SIGINT');
 
-// process.removeAllListeners('SIGINT');
+// Cleaning resources on SIGINT
+process.on('SIGINT', function() {
+        console.log('disconnecting...');
+        zwave.disconnect(config.device);
+        process.exit();
+});
 
-// // Cleaning resources on SIGINT
-// process.on('SIGINT', function() {
-//         console.log('disconnecting...');
-//         zwave.disconnect(config.device);
-//         process.exit();
-// });
-
-// // Zwave connect
-// zwave.connect(config.device);
+// Zwave connect
+zwave.connect(config.device);
 
