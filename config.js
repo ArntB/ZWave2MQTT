@@ -9,21 +9,21 @@
  * @author: ltoinel@free.fr
  */
 
-var config = {};
+var config = require('./secret.js');
+// MQTT Message Broker Config should be defined in secret.js
+// https://docs.microsoft.com/en-us/azure/iot-hub/iot-hub-mqtt-support
+// config.mqtt = {};
+// config.mqtt.uri = "mqtts://{hub_url}";
+// config.mqtt.options = {
+//     username: '{hub_url}/{device_id}/api-version=2016-11-14',
+//     password: '{sas_token}',
+//     keepalive: 20,
+//     clean: true,
+//     clientId: '{device_id}'
+// };
 
 //Debug
 config.debug = true;
-
-// MQTT Message Broker 
-config.mqtt = {};
-config.mqtt.uri = "mqtt://192.168.1.2";
-config.mqtt.options = {
-//username: 'AnUser',
-//password: 'APassword',
-keepalive: 20,
-clean: true,
-clientId: 'zwave2mqtt'
-};
 
 // Zwavebus
 config.saveconfig = false;
