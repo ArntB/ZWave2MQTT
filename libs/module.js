@@ -37,24 +37,17 @@ Module.prototype = {
 		// Starting the service
 		console.info("-> Starting %s v%s", this.pjson.name, this.pjson.version);
 		var self = this;
-		// this.client = {
-		// 	publish: function(cmd,msg){
-		// 		self.logger.info("CMD: " + cmd + " msg: " + msg);
 
-		// 	},
-		// 	end: function(){
-		// 		self.logger.info("end");
-		// 	}
-		// };//MOCK
 		// Create an MQTT client
 		this.client = mqtt.connect(this.config.mqtt.uri, this.config.mqtt.options);
+				
 		console.info("Connecting to the MQTT Server : %s", this.config.mqtt.uri);
 		
 		// // MQTT Connection
 		this.client.on('connect', function(){
-			console.info("Connected to the MQTT broker");
-			var topic = `devices/${self.config.mqtt.options.clientId}/messages/devicebound/`;
-			self.client.subscribe(topic);
+			console.info("Connected to the MQTT broker : " +publishTopic);
+			var subscribeTopic = `devices/${self.config.mqtt.options.clientId}/messages/devicebound/`;
+			self.client.subscribe(subscribeTopic);
 		});
 	
 		// On message received on "command"	
@@ -101,9 +94,9 @@ Module.prototype = {
 	},
 
 	publish: function(topic, message){
-		var topic = `devices/${self.config.mqtt.options.clientId}/messages/events/zwave`;
-		console.log("publishing to topic:" + topic);
-		this.client.publish(topic, message);
+		console.log("publishing to topic:" + publishTopic);
+		var publishTopic = `devices/${self.config.mqtt.options.clientId}/messages/events/zwave`;
+		this.client.publish(publishTopic, message);
 	}
 };
 
