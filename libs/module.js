@@ -96,7 +96,7 @@ Module.prototype = {
 
 	publish: function(topic, message){
 		console.log("publishing to topic:" + publishTopic);
-		var publishTopic = `devices/${self.config.mqtt.options.clientId}/messages/events/zwave`;
+		var publishTopic = `devices/${this.config.mqtt.options.clientId}/messages/events/zwave`;
 		this.client.publish(publishTopic, message);
 	}
 };
