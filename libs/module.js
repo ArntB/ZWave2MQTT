@@ -53,7 +53,8 @@ Module.prototype = {
 		// // MQTT Connection
 		this.client.on('connect', function(){
 			console.info("Connected to the MQTT broker");
-			self.client.subscribe('command');
+			var topci = `devices/${config.mqtt.options.clientId}/messages/devicebound/#`
+			self.client.subscribe(topic);
 		});
 	
 		// On message received on "command"	
@@ -97,6 +98,11 @@ Module.prototype = {
 	
 		// Stopping the process
 		process.exit();
+	},
+
+	publish: function(topic, message){
+		var topci = `devices/${config.mqtt.options.clientId}/messages/events/zwave`
+		this.client.publish(topic, message);
 	}
 };
 

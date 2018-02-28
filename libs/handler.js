@@ -53,9 +53,9 @@ exports.onEvent = function(nodeid, value) {
         var command = constants.commandClass[32];
         var message = JSON.stringify({source: "zwave["+nodeid+"]", label: command, value: value, action : "Event", timestamp: Date.now()});
         logger.debug("Publishing : " +  command + " => " + message);
-
+		
         // We publish the value on the MQTT broker
-        zwaveBus.client.publish(command, message);
+        zwaveBus.publish(command, message);
 };
 
 /*
