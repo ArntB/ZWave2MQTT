@@ -45,8 +45,9 @@ Module.prototype = {
 		
 		// // MQTT Connection
 		this.client.on('connect', function(){
-			console.info("Connected to the MQTT broker : " +publishTopic);
+			
 			var subscribeTopic = `devices/${self.config.mqtt.options.clientId}/messages/devicebound/`;
+			console.info("Connected to the MQTT broker : " +subscribeTopic);
 			self.client.subscribe(subscribeTopic);
 		});
 	
