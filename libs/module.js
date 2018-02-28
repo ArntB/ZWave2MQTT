@@ -53,7 +53,7 @@ Module.prototype = {
 		// // MQTT Connection
 		this.client.on('connect', function(){
 			console.info("Connected to the MQTT broker");
-			var topic = `devices/${self.config.mqtt.options.clientId}/messages/devicebound/#`
+			var topic = `devices/${self.config.mqtt.options.clientId}/messages/devicebound/`;
 			self.client.subscribe(topic);
 		});
 	
@@ -101,7 +101,8 @@ Module.prototype = {
 	},
 
 	publish: function(topic, message){
-		var topic = `devices/${self.config.mqtt.options.clientId}/messages/events/zwave`
+		var topic = `devices/${self.config.mqtt.options.clientId}/messages/events/zwave`;
+		console.log("publishing to topic:" + topic);
 		this.client.publish(topic, message);
 	}
 };
