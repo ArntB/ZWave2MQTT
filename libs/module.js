@@ -11,7 +11,7 @@
 var mqtt = require('mqtt');
 
 // Global module vars
-function Module(path) {
+function Module(path,cfg) {
 	
 	// Path of this module
 	this.path = path;
@@ -20,7 +20,7 @@ function Module(path) {
 	this.pjson = require(path + '/package.json');
 	
 	// Package that describes this module
-	this.config = require(path + '/config');
+	this.config = cfg;//require(path + '/config');
 	
 	// The logger for this module
 	this.logger = require('./logger').getLogger(this.pjson.name, this.config.debug);
