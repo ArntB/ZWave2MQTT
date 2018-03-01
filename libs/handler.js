@@ -79,6 +79,8 @@ exports.onValueChanged = function(nodeid, comclass, value) {
 	// We prepare a message
 	var command = constants.commandClass[comclass];
 	var message = JSON.stringify({source: "zwave["+nodeid+"]", label: value.label, value: value.value, action : "ValueChanged", timestamp: Date.now()});
+	console.debug("value::::::::");
+	console.debug(value);
 	//logger.debug("Publishing : " +  command + " => " + message);
 	
 	// We publish the value on the MQTT broker
@@ -119,11 +121,12 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 	nodes[nodeid].name = nodeinfo.name;
 	nodes[nodeid].loc = nodeinfo.loc;
 	nodes[nodeid].ready = true;
-	logger.debug('node%d: %s, %s', nodeid,
-			nodeinfo.manufacturer ? nodeinfo.manufacturer : 'id=' + nodeinfo.manufacturerid,
-			nodeinfo.product ? nodeinfo.product : 'product=' + nodeinfo.productid + ', type=' + nodeinfo.producttype);
+	
+	
 	logger.debug('node%d: name="%s", type="%s", location="%s"', nodeid,
 			nodeinfo.name, nodeinfo.type, nodeinfo.loc);
+	console.log("NODEINFO :::::::::::::::::::::::::::::  ");
+	console.log(nodeinfo);
 	for (var comclass in nodes[nodeid].classes) {
 		switch (comclass) {
 		case 0x25: // COMMAND_CLASS_SWITCH_BINARY
