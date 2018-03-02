@@ -26,8 +26,6 @@ exports.init = function(module) {
  */
 exports.onDriverReady = function(homeid) {
 	logger.info('Scanning homeid=0x%s...', homeid.toString(16));
-	
-
 };
 
 /*
