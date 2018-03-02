@@ -15,7 +15,7 @@ var nodes = [];
 //The logger for this module
 var logger;
 var zwaveBus;
-
+var config = require('../config');
 exports.init = function(module) {
 	logger = module.logger;
 	zwaveBus = module;
@@ -26,6 +26,8 @@ exports.init = function(module) {
  */
 exports.onDriverReady = function(homeid) {
 	logger.info('Scanning homeid=0x%s...', homeid.toString(16));
+	
+
 };
 
 /*
@@ -55,7 +57,7 @@ exports.onEvent = function(nodeid, value) {
         logger.debug("Publishing : " +  command + " => " + message);
 		
         // We publish the value on the MQTT broker
-        zwaveBus.publish(command, message);
+        zwaveBus.publish( message);
 };
 
 /*
@@ -67,24 +69,22 @@ exports.onValueAdded = function(nodeid, comclass, value) {
 	}
 	nodes[nodeid].classes[comclass][value.index] = value;
 
-	logger.debug('node%d: value added: %d:%s:%s', nodeid, comclass, value.label,
-			value.value);
+	logger.debug('node %d: value added: %d:%s:%s', nodeid, comclass, value.label, value.value);
+	// Add new value to sensor registry:
+	var addValueMessage = JSON.stringify({id:`${config.deviceId}/${nodeid}/${value.index}`,hubid:config.deviceId,comclass:comclass, label:value.label, value:value.value});
+	zwaveBus.publish(addValueMessage);
 };
 
 /*
  * When a value changed.
  */
 exports.onValueChanged = function(nodeid, comclass, value) {
-	
 	// We prepare a message
 	var command = constants.commandClass[comclass];
-	var message = JSON.stringify({source: "zwave["+nodeid+"]", label: value.label, value: value.value, action : "ValueChanged", timestamp: Date.now()});
-	console.debug("value::::::::");
-	console.debug(value);
-	//logger.debug("Publishing : " +  command + " => " + message);
-	
+	var message = JSON.stringify({source: `${config.deviceId}/${nodeid}/${value.index}`, label: value.label, 
+		value: value.value, action : "ValueChanged", timestamp: Date.now()});
 	// We publish the value on the MQTT broker
-	zwaveBus.publish(command, message);
+	zwaveBus.publish(message);
 
 	if (nodes[nodeid].ready) {
 		logger.debug('node%d: value changed: %d:%s:%s->%s', nodeid, comclass,
@@ -108,6 +108,10 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 	}
 };
 
+function registerSensorHub(){
+	var registerSensorHub = JSON.stringify({id:config.deviceId, type:"sensor_hub"});
+	zwaveBus.publish(registerSensorHub);
+}
 /*
  * When a node is ready.
  */
@@ -127,6 +131,9 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 			nodeinfo.name, nodeinfo.type, nodeinfo.loc);
 	console.log("NODEINFO :::::::::::::::::::::::::::::  ");
 	console.log(nodeinfo);
+	
+	registerSensorHub();	
+
 	for (var comclass in nodes[nodeid].classes) {
 		switch (comclass) {
 		case 0x25: // COMMAND_CLASS_SWITCH_BINARY

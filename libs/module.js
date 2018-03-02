@@ -11,7 +11,7 @@
 var mqtt = require('mqtt');
 
 // Global module vars
-function Module(path,cfg) {
+function Module(path) {
 	
 	// Path of this module
 	this.path = path;
@@ -20,7 +20,7 @@ function Module(path,cfg) {
 	this.pjson = require(path + '/package.json');
 	
 	// Package that describes this module
-	this.config = cfg;//require(path + '/config');
+	this.config = require(path + '/config');
 	
 	// The logger for this module
 	this.logger = require('./logger').getLogger(this.pjson.name, this.config.debug);
@@ -94,7 +94,7 @@ Module.prototype = {
 		process.exit();
 	},
 
-	publish: function(topic, message){
+	publish: function(message){
 		
 		var publishTopic = `devices/${this.config.mqtt.options.clientId}/messages/events/zwave`;
 		console.log("publishing to topic:" + publishTopic);

@@ -19,7 +19,7 @@ var handler = require('./libs/handler');
 var mqtt = require('mqtt');
 
 // Initialize the module
-var zwaveBus = new module( __dirname,config);
+var zwaveBus = new module( __dirname);
 
 
 // Initialize the Zwave connector

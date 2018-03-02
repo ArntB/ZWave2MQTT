@@ -33,3 +33,4 @@ config.suppressrefresh = false;
 config.device = '/dev/ttyS0';
 
 module.exports = config;
+
