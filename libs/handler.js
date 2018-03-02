@@ -48,16 +48,15 @@ exports.onNodeAdded = function(nodeid) {
 	};
 };
 
+function publishEvent(nodeid,value, action){
+	var message = JSON.stringify({source: `${config.deviceId}/${nodeid}/${value.index}`, label: value.label, 
+		value: value.value, action : action, timestamp: Date.now()});
+		logger.debug("Publishing : " + message);
+	zwaveBus.publish(message);
+}
 
 exports.onEvent = function(nodeid, value) {
-
-       // We prepare a message
-        var command = constants.commandClass[32];
-        var message = JSON.stringify({source: "zwave["+nodeid+"]", label: command, value: value, action : "Event", timestamp: Date.now()});
-        logger.debug("Publishing : " +  command + " => " + message);
-		
-        // We publish the value on the MQTT broker
-        zwaveBus.publish( message);
+	publishEvent(nodeid,value,"Event");
 };
 
 /*
@@ -79,13 +78,7 @@ exports.onValueAdded = function(nodeid, comclass, value) {
  * When a value changed.
  */
 exports.onValueChanged = function(nodeid, comclass, value) {
-	// We prepare a message
-	var command = constants.commandClass[comclass];
-	var message = JSON.stringify({source: `${config.deviceId}/${nodeid}/${value.index}`, label: value.label, 
-		value: value.value, action : "ValueChanged", timestamp: Date.now()});
-	// We publish the value on the MQTT broker
-	zwaveBus.publish(message);
-
+	publishEvent(nodeid,value,"ValueChanged");
 	if (nodes[nodeid].ready) {
 		logger.debug('node%d: value changed: %d:%s:%s->%s', nodeid, comclass,
 						value.label,
