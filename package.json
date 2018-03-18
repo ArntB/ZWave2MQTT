@@ -15,7 +15,8 @@
   "dependencies": {
     "bunyan": "^1.8.12",
     "mqtt": "^2.12.1",
-    "openzwave-shared": "^1.4.0"
+    "openzwave-shared": "^1.4.0",
+    "guid": "^0.0.12"
   },
   "repository": {
     "type": "git",

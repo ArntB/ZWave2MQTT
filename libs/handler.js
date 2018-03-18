@@ -8,7 +8,7 @@
  */
 
 var constants = require('./constants');
-
+var Guid = require('guid');
 // Initialize the node array
 var nodes = [];
 
@@ -47,8 +47,8 @@ exports.onNodeAdded = function(nodeid) {
 };
 
 function publishEvent(nodeid,value, action){
-	var message = JSON.stringify({source: `${config.deviceId}/${nodeid}/${value.index}`, label: value.label, 
-		value: value.value, action : action, timestamp: Date.now()});
+	var message = JSON.stringify({id:Guid.raw(), source: `${config.deviceId}/${nodeid}/${value.index}`, label: value.label, 
+		value: value.value, event_type : action, timestamp: Date.now()});
 		logger.debug("Publishing : " + message);
 	zwaveBus.publish(message);
 }
@@ -68,7 +68,8 @@ exports.onValueAdded = function(nodeid, comclass, value) {
 
 	logger.debug('node %d: value added: %d:%s:%s', nodeid, comclass, value.label, value.value);
 	// Add new value to sensor registry:
-	var addValueMessage = JSON.stringify({id:`${config.deviceId}/${nodeid}/${value.index}`,hubid:config.deviceId,comclass:comclass, label:value.label, value:value.value});
+	var addValueMessage = JSON.stringify({id:`${config.deviceId}/${nodeid}/${value.index}`, hubid:config.deviceId,
+	comclass:comclass, label:value.label, value:value.value, timestamp: Date.now(),event_type:'AddValue'});
 	zwaveBus.publish(addValueMessage);
 };
 
@@ -76,7 +77,7 @@ exports.onValueAdded = function(nodeid, comclass, value) {
  * When a value changed.
  */
 exports.onValueChanged = function(nodeid, comclass, value) {
-	publishEvent(nodeid,value,"ValueChanged");
+	publishEvent(nodeid, value, "ValueChanged");
 	if (nodes[nodeid].ready) {
 		logger.debug('node%d: value changed: %d:%s:%s->%s', nodeid, comclass,
 						value.label,
@@ -100,7 +101,7 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 };
 
 function registerSensorHub(){
-	var registerSensorHub = JSON.stringify({id:config.deviceId, type:"sensor_hub"});
+	var registerSensorHub = JSON.stringify({id:config.deviceId, type:"sensor_hub",timestamp: Date.now(),event_type:'RegisterHub'});
 	zwaveBus.publish(registerSensorHub);
 }
 /*
