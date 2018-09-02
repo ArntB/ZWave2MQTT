@@ -47,7 +47,7 @@ exports.onNodeAdded = function(nodeid) {
 };
 
 function publishEvent(nodeid,value, action){
-	var message = JSON.stringify({id:Guid.raw(), source: `${config.deviceId}/${nodeid}/${value.index}`, label: value.label, 
+	var message = JSON.stringify({id:Guid.raw(), source: `${config.deviceId}/${nodeid}`, label: value.label, 
 		value: value.value, event_type : action, timestamp: Date.now()});
 		logger.debug("Publishing : " + message);
 	zwaveBus.publish(message);
@@ -65,10 +65,10 @@ exports.onValueAdded = function(nodeid, comclass, value) {
 		nodes[nodeid].classes[comclass] = {};
 	}
 	nodes[nodeid].classes[comclass][value.index] = value;
-
+	
 	logger.debug('node %d/%s: value added: %d:%s:%s', nodeid,value.index, comclass, value.label, value.value);
 	// Add new value to sensor registry:
-	var addValueMessage = JSON.stringify({id:`${config.deviceId}/${nodeid}/${value.index}`, hubid:config.deviceId,
+	var addValueMessage = JSON.stringify({id:`${config.deviceId}/${nodeid}`, hubid:config.deviceId,
 	comclass:comclass, label:value.label, value:value.value, timestamp: Date.now(),event_type:'AddValue'});
 	zwaveBus.publish(addValueMessage);
 };
@@ -135,9 +135,13 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 		}
 		var values = nodes[nodeid].classes[comclass];
 		logger.debug('node%d: class %d', nodeid, comclass);
-		for (var idx in values)
+		for (var idx in values){
 			logger.debug('node%d:   %s=%s', nodeid, values[idx].label,
 					values[idx].value);
+			if(values[idx].label == "Temperature"){
+				zwave.setValue(nodeid, 0x70, 0x3, 40, 1);
+			}
+		}
 	}
 };
 
