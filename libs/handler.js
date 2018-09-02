@@ -63,6 +63,10 @@ exports.onEvent = function(nodeid, value) {
 exports.onValueAdded = function(nodeid, comclass, value) {
 	if (!nodes[nodeid].classes[comclass]) {
 		nodes[nodeid].classes[comclass] = {};
+		if(value.label == "Temperature"){
+			logger.debug("Setting config---------------------------------");
+			zwave.setValue(nodeid, 0x70, 0x3, 40, 1);
+		}
 	}
 	nodes[nodeid].classes[comclass][value.index] = value;
 	
