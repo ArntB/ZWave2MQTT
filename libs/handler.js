@@ -66,7 +66,7 @@ exports.onValueAdded = function(nodeid, comclass, value) {
 	}
 	nodes[nodeid].classes[comclass][value.index] = value;
 
-	logger.debug('node %d: value added: %d:%s:%s', nodeid, comclass, value.label, value.value);
+	logger.debug('node %d: value added: %d:%s:%s:%s', nodeid, comclass, value.label, value.value,value.index);
 	// Add new value to sensor registry:
 	var addValueMessage = JSON.stringify({id:`${config.deviceId}/${nodeid}/${value.index}`, hubid:config.deviceId,
 	comclass:comclass, label:value.label, value:value.value, timestamp: Date.now(),event_type:'AddValue'});
