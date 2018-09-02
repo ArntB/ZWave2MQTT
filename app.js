@@ -35,7 +35,7 @@ var onCommand = function(command){
 	zwave.setValue(command.nodeid, command.commandclass, command.instance, command.index, command.value);
 }
 
-handler.init(zwaveBus);
+handler.init(zwaveBus,zwave);
 zwaveBus.start(onCommand);
 
 // Event 

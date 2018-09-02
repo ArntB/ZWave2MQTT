@@ -15,10 +15,12 @@ var nodes = [];
 //The logger for this module
 var logger;
 var zwaveBus;
+var zwave;
 var config = require('../config');
-exports.init = function(module) {
+exports.init = function(module,_zwave) {
 	logger = module.logger;
 	zwaveBus = module;
+	zwave = _zwave;
 };
 
 /*
