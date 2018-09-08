@@ -65,10 +65,6 @@ exports.onEvent = function(nodeid, value) {
 exports.onValueAdded = function(nodeid, comclass, value) {
 	if (!nodes[nodeid].classes[comclass]) {
 		nodes[nodeid].classes[comclass] = {};
-		if(value.label == "Temperature"){
-			logger.debug("Setting config---------------------------------");
-			zwave.setValue(nodeid, 0x70, 0x3, 40, 1);
-		}
 	}
 	nodes[nodeid].classes[comclass][value.index] = value;
 	
@@ -77,6 +73,7 @@ exports.onValueAdded = function(nodeid, comclass, value) {
 	var addValueMessage = JSON.stringify({id:`${config.deviceId}/${nodeid}`, hubid:config.deviceId,
 	comclass:comclass, label:value.label, value:value.value, timestamp: Date.now(),event_type:'AddValue'});
 	zwaveBus.publish(addValueMessage);
+
 };
 
 /*
@@ -144,11 +141,30 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 		for (var idx in values){
 			logger.debug('node%d:   %s=%s', nodeid, values[idx].label,
 					values[idx].value);
-			if(values[idx].label == "Temperature"){
-				zwave.setValue(nodeid, 0x70, 0x3, 40, 1);
-			}
 		}
 	}
+//	for(var comclass in nodex[3].classes){
+//		var values = nodes[nodeid].classes[comclass];
+//		logger.debug('node%d: class %d', 3, comclass);
+
+//		for (var idx in values){
+//			logger.debug('node%d:   %s=%s', nodeid, values[idx].label,
+//					values[idx].value);
+//		}
+//
+//	}
+	console.log(nodes[3]);
+	if(true){
+		logger.debug("Setting config---------------------------------");
+		var stats = zwave.getNodeStatistics('3');
+		logger.debug(stats);
+		//zwave.setValue('03', '112', '40', '40', '1');
+		zwave.setConfigParam(3, 64, 1,1);
+		zwave.setConfigParam(3, 40, 1,1);
+		zwave.setConfigParam(3, 41, 0x000A0100,4);
+		
+	}
+
 };
 
 /*
