@@ -194,7 +194,7 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 	if(deviceConfig[nodeid] ){
 		var config = deviceConfig[nodeid];
 		config.forEach(confItem => {
-			zwave.setConfigParam(configItem[0], configItem[1], configItem[2], configItem[3]);	
+			zwave.setConfigParam(confItem[0], confItem[1], confItem[2], confItem[3]);	
 		});
 		// zwave.setConfigParam(3, 50,  60, 2);
 		// zwave.setConfigParam(3, 51,   5, 2);
