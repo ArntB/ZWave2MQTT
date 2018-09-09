@@ -60,7 +60,7 @@ function publishSensorEvent(nodeid,value, action, comclass){
 		label: value.label, 
 		value: value.value, 
 		
-		event_type: action, timestamp: Date.UTC
+		event_type: action, timestamp: Date.now()
 	});
 	logger.debug("Publishing : " + message);
 	zwaveBus.publish(message);
