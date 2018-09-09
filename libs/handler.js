@@ -131,7 +131,18 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 		delete nodes[nodeid].classes[comclass][index];
 	}
 };
-
+var deviceConfig = {
+	2: [
+		[3, 50,  60, 2],
+		[3, 51,   5, 2],
+		[3, 52, 300, 2],
+	],
+	3: [
+		[3, 64,          1, 1],
+		[3, 40,          1, 1],
+		[3, 41, 0x000A0100, 4]
+	]
+};
 
 /*
  * When a node is ready.
@@ -168,27 +179,28 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 					values[idx].value);
 		}
 	}
-//	for(var comclass in nodex[3].classes){
-//		var values = nodes[nodeid].classes[comclass];
-//		logger.debug('node%d: class %d', 3, comclass);
-
-//		for (var idx in values){
-//			logger.debug('node%d:   %s=%s', nodeid, values[idx].label,
-//					values[idx].value);
-//		}
-//
-//	}
 	// console.log(nodes[3]);
 	// if(true){
 	// 	logger.debug("Setting config---------------------------------");
 	// 	var stats = zwave.getNodeStatistics('3');
 	// 	logger.debug(stats);
-	// 	//zwave.setValue('03', '112', '40', '40', '1');
-	// 	zwave.setConfigParam(3, 64, 1,1);
-	// 	zwave.setConfigParam(3, 40, 1,1);
-	// 	zwave.setConfigParam(3, 41, 0x000A0100,4);
+	// 	zwave.setConfigParam(3, 64,          1, 1);
+	// 	zwave.setConfigParam(3, 40,          1, 1);
+	// 	zwave.setConfigParam(3, 41, 0x000A0100, 4);
 	// }
+
+
+	if(deviceConfig[nodeid] ){
+		var config = deviceConfig[nodeid];
+		config.forEach(confItem => {
+			zwave.setConfigParam(configItem[0], configItem[1], configItem[2], configItem[3]);	
+		});
+		// zwave.setConfigParam(3, 50,  60, 2);
+		// zwave.setConfigParam(3, 51,   5, 2);
+		// zwave.setConfigParam(3, 52, 300, 2);
+	}
 };
+
 
 /*
  * When a notification is received.
