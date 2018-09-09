@@ -74,7 +74,7 @@ function registerSensor(nodeid){
 
 		node:node,
 		
-		event_type:'RegisterHub', 
+		event_type:'RegisterNode', 
 		timestamp: Date.now()
 	});
 	zwaveBus.publish(registerSensorHub);
