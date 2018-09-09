@@ -54,13 +54,14 @@ function publishSensorEvent(nodeid,value, action, comclass){
 		id:Guid.raw(), source: `${config.deviceId}/${nodeid}/${comclass}/${value.index}`, 
 		hubid: config.deviceId,
 		nodeid:nodeid,
+		event_type: action, 
+		timestamp: Date.now(),
+		message_type: "zwave_sensor",
+		
 		comclass:comclass,
 		index:value.index,
-		
 		label: value.label, 
-		value: value.value, 
-		
-		event_type: action, timestamp: Date.now()
+		value: value.value
 	});
 	logger.debug("Publishing : " + message);
 	zwaveBus.publish(message);
@@ -71,11 +72,12 @@ function registerSensor(nodeid){
 	var registerSensorHub = JSON.stringify({
 		id: Guid.raw(), source: `${config.deviceId}/${nodeid}`, 
 		hubid: config.deviceId,
-
-		node:node,
-		
+		nodeid:nodeid,
 		event_type:'RegisterNode', 
-		timestamp: Date.now()
+		timestamp: Date.now(),
+		message_type: "zwave_sensor",
+
+		node:node
 	});
 	zwaveBus.publish(registerSensorHub);
 }
