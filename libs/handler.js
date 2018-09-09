@@ -66,9 +66,10 @@ function publishSensorEvent(nodeid,value, action, comclass){
 	zwaveBus.publish(message);
 }
 
-function registerSensorHub(node){
+function registerSensor(nodeid){
+	var node = nodes[nodeid];
 	var registerSensorHub = JSON.stringify({
-		id: Guid.raw(), source: `${config.deviceId}`, 
+		id: Guid.raw(), source: `${config.deviceId}/${nodeid}`, 
 		hubid: config.deviceId,
 
 		node:node,
@@ -163,7 +164,7 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 	console.log("NODEINFO :::::::::::::::::::::::::::::  ");
 	console.log(nodeinfo);
 	
-	registerSensorHub(nodes[nodeid]);	
+	registerSensor(nodeid);	
 
 	for (var comclass in nodes[nodeid].classes) {
 		switch (comclass) {
