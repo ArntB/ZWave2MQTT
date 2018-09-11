@@ -74,7 +74,7 @@ exports.removeFailedNode = function(nodeid){
 		logger.error("Trying to add nodes before driver initialized");
 	}
 	var result = zwave.removeFailedNode(myHomeid, nodeid);
-	logger.info("Remove failed device to homeid=0x%s nodeid=%s", myHomeid.toString(16),nodeid);
+	logger.info("Remove failed device to homeid=0x%s nodeid=%s result %s", myHomeid.toString(16),nodeid,result);
 	
 };
 
