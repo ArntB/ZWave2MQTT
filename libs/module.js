@@ -54,6 +54,7 @@ Module.prototype = {
 		// On message received on "command"	
 		this.client.on('message', function (topic, message) {
 			var command = JSON.parse(message.toString());
+			console.log("JSON Command:  " + command);
 			console.log("Command received : %s %s %s %s %s", command.nodeid, command.commandclass, command.instance, command.index, command.value);
 			callback(command);
 		});
