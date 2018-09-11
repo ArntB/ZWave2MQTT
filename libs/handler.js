@@ -68,10 +68,10 @@ exports.removeNode = function(){
 	if(!myHomeid) {
 		logger.error("Trying to add nodes before driver initialized");
 	}
-	zwave.removeNode(myHomeid,true);
-	logger.info("Ready to add device to homeid=0x%s...",myHomeid.toString(16));
+	zwave.removeNode(myHomeid);
+	logger.info("Ready to remove device to homeid=0x%s...",myHomeid.toString(16));
 	setTimeout(()=>{
-		zwave.CancelControllerCommand(myHomeid);
+		zwave.cancelControllerCommand(myHomeid);
 		logger.info("Stop remove mode");
 	},60000);
 }
