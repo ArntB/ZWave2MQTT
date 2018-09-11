@@ -17,6 +17,7 @@ var logger;
 var zwaveBus;
 var zwave;
 var config = require('../config');
+var homeid = null;
 exports.init = function(module,_zwave) {
 	logger = module.logger;
 	zwaveBus = module;
@@ -24,10 +25,12 @@ exports.init = function(module,_zwave) {
 };
 
 /*
- * When the driver is ready. @param homeid: the home id.
+ * When the driver is ready. @param homeid: the home id. 0xc0e9c710
  */
 exports.onDriverReady = function(homeid) {
 	logger.info('Scanning homeid=0x%s...', homeid.toString(16));
+	//zwave.addNode(homeid,true);
+	homeid = homeid;
 };
 
 /*
@@ -46,7 +49,28 @@ exports.onNodeAdded = function(nodeid) {
 		classes : {},
 		ready : false
 	};
+	console.log("Node Added " + nodeid);
+	
 };
+exports.addNode = function(){
+	if(!homeid) {
+		logger.error("Trying to add nodes before driver initialized");
+	}
+	zwave.addNode(homeid,true);
+	setTimeout(()=>{
+		zwave.cancelControllerCommand(homeid);
+	},60000);
+}
+exports.removeNode = function(){
+	if(!homeid) {
+		logger.error("Trying to add nodes before driver initialized");
+	}
+	zwave.removeNode(homeid,true);
+	setTimeout(()=>{
+		zwave.CancelControllerCommand(homeid);
+	},60000);
+}
+
 
 function publishSensorEvent(nodeid,value, action, comclass){
 	var message = JSON.stringify(
@@ -57,7 +81,7 @@ function publishSensorEvent(nodeid,value, action, comclass){
 		event_type: action, 
 		timestamp: Date.now(),
 		message_type: "zwave_sensor",
-		
+
 		comclass:comclass,
 		index:value.index,
 		label: value.label, 

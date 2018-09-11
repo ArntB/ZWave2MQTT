@@ -32,7 +32,21 @@ var zwave = new OpenZwave({
 
 // On new command handler
 var onCommand = function(command){
-	zwave.setValue(command.nodeid, command.commandclass, command.instance, command.index, command.value);
+        console.log(command);
+        if(command.event_type == "config"){
+                zwave.setConfigParam(command.nodeid, command.commandclass, command.value, command.size);
+        }
+        else if(command.event_type == "set_value"){
+                zwave.setValue(command.nodeid, command.commandclass, command.instance, command.index, command.value);
+        }
+        else if(command.event_type == "addNode"){
+                handler.addNode();      
+        }
+        else if(command.event_type == "removeNode"){
+                handler.removeNode();      
+        }
+        // zwave.addNode(homeid,true);
+
 }
 
 handler.init(zwaveBus,zwave);
