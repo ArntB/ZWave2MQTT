@@ -51,31 +51,39 @@ exports.onNodeAdded = function(nodeid) {
 		ready : false
 	};
 	console.log("Node Added " + nodeid);
-	
 };
+
 exports.addNode = function(){
 	if(!myHomeid) {
 		logger.error("Trying to add nodes before driver initialized");
 	}
 	logger.info("Ready to add device to homeid=0x%s...",myHomeid.toString(16));
 	zwave.addNode(myHomeid, true);
-	setTimeout(()=>{
-		zwave.cancelControllerCommand(myHomeid);
-		logger.info("Stop add mode");
-	},60000);
-}
+	stopModeAfterTimeout("Stop add mode");
+};
 exports.removeNode = function(){
 	if(!myHomeid) {
 		logger.error("Trying to add nodes before driver initialized");
 	}
 	zwave.removeNode(myHomeid);
 	logger.info("Ready to remove device to homeid=0x%s...",myHomeid.toString(16));
-	setTimeout(()=>{
-		zwave.cancelControllerCommand(myHomeid);
-		logger.info("Stop remove mode");
-	},60000);
-}
+	stopModeAfterTimeout("Stop remove mode");
+};
+exports.removeFailedNode = function(nodeid){
+	if(!myHomeid) {
+		logger.error("Trying to add nodes before driver initialized");
+	}
+	var result = zwave.removeFailedNode(myHomeid, nodeid);
+	logger.info("Remove failed device to homeid=0x%s nodeid=%s", myHomeid.toString(16),nodeid);
+	
+};
 
+function stopModeAfterTimeout(message) {
+	setTimeout(() => {
+		zwave.cancelControllerCommand(myHomeid);
+		logger.info(message);
+	}, 60000);
+}
 
 function publishSensorEvent(nodeid,value, action, comclass){
 	var message = JSON.stringify(

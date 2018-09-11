@@ -45,6 +45,9 @@ var onCommand = function(command){
         else if(command.event_type == "removeNode"){
                 handler.removeNode();      
         }
+        else if(command.event_type == "removeFailedNode"){
+                handler.removeFailedNode(command.nodeid);      
+        }
         // zwave.addNode(homeid,true);
 
 }
