@@ -17,7 +17,7 @@ var logger;
 var zwaveBus;
 var zwave;
 var config = require('../config');
-var homeid = null;
+var myHomeid = null;
 exports.init = function(module,_zwave) {
 	logger = module.logger;
 	zwaveBus = module;
@@ -30,7 +30,8 @@ exports.init = function(module,_zwave) {
 exports.onDriverReady = function(homeid) {
 	logger.info('Scanning homeid=0x%s...', homeid.toString(16));
 	//zwave.addNode(homeid,true);
-	homeid = homeid;
+
+	myHomeid = homeid;
 };
 
 /*
@@ -53,21 +54,21 @@ exports.onNodeAdded = function(nodeid) {
 	
 };
 exports.addNode = function(){
-	if(!homeid) {
+	if(!myHomeid) {
 		logger.error("Trying to add nodes before driver initialized");
 	}
-	zwave.addNode(homeid,true);
+	zwave.addNode(myHomeid,true);
 	setTimeout(()=>{
-		zwave.cancelControllerCommand(homeid);
+		zwave.cancelControllerCommand(myHomeid);
 	},60000);
 }
 exports.removeNode = function(){
-	if(!homeid) {
+	if(!myHomeid) {
 		logger.error("Trying to add nodes before driver initialized");
 	}
-	zwave.removeNode(homeid,true);
+	zwave.removeNode(myHomeid,true);
 	setTimeout(()=>{
-		zwave.CancelControllerCommand(homeid);
+		zwave.CancelControllerCommand(myHomeid);
 	},60000);
 }
 
