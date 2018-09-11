@@ -163,8 +163,23 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 		delete nodes[nodeid].classes[comclass][index];
 	}
 };
+
+// manufacturer: 'FIBARO System',
+// manufacturerid: '0x010f',
+// product: 'Unknown: type=0702, id=1000',
+// producttype: '0x0702',
+// productid: '0x1000',
+// type: 'Access Control Sensor',
+// name: '',
+// loc: '' }
+
 var deviceConfig = {
 	2: [
+		[3, 50,  60, 2],
+		[3, 51,   5, 2],
+		[3, 52, 300, 2],
+	],
+	5: [
 		[3, 50,  60, 2],
 		[3, 51,   5, 2],
 		[3, 52, 300, 2],
