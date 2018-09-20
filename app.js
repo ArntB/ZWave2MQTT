@@ -34,7 +34,8 @@ var zwave = new OpenZwave({
 var onCommand = function(command){
         console.log(command);
         if(command.event_type == "config"){
-                zwave.setConfigParam(command.nodeid, command.commandclass, command.value, command.size);
+                handler.setNodeConfig(command);
+                //zwave.setConfigParam(command.nodeid, command.commandclass, command.value, command.size);
         }
         else if(command.event_type == "set_value"){
                 zwave.setValue(command.nodeid, command.commandclass, command.instance, command.index, command.value);

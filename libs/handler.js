@@ -198,8 +198,8 @@ var deviceConfig = {
 	// 	[3, 41, 0x000A0100, 4]
 	// ],
 	7: [
-		[7, 62,  10, 2],
-		[7, 64,   10, 2],
+		[7, 62,  60, 2],
+		[7, 64,   60, 2],
 	],
 };
 
@@ -260,7 +260,14 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 	}
 };
 
-
+exports.setNodeConfig = function(command){
+	var nodeId = command.nodeid;
+	if(!deviceConfig[nodeId]){
+		deviceConfig[nodeId] = [];
+	}
+	deviceConfig[nodeId].push([nodeId, command.commandclass, command.value, command.size])
+	zwave.setConfigParam(command.nodeid, command.commandclass, command.value, command.size);
+}
 /*
  * When a notification is received.
  */
