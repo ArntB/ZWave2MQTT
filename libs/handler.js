@@ -262,7 +262,8 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 
 exports.setNodeConfig = function(command){
 	var nodeId = command.nodeid;
-	if(!deviceConfig[nodeId]){
+	if(!deviceConfig[nodeId] 
+		|| command.clear){
 		deviceConfig[nodeId] = [];
 	}
 	deviceConfig[nodeId].push([nodeId, command.commandclass, command.value, command.size])
