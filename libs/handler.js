@@ -184,7 +184,9 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 var deviceConfig = {};
 fs.readFile("../device_config.json", function(err, buf) {
 	var buffer = buf.toString();
+	console.log("------------------ READING CONFIG -----------------------------")
 	console.log(buffer);
+	console.log("------------------ READING CONFIG -----------------------------")
 	deviceConfig = JSON.parse(buffer);
 });
 // var oppsett = 
