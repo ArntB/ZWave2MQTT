@@ -9,6 +9,7 @@
 
 var constants = require('./constants');
 var Guid = require('guid');
+var fs = require("fs");
 // Initialize the node array
 var nodes = [];
 
@@ -88,13 +89,13 @@ function stopModeAfterTimeout(message) {
 function publishSensorEvent(nodeid,value, action, comclass){
 	var message = JSON.stringify(
 	{
-		id:Guid.raw(), source: `${config.deviceId}/${nodeid}/${comclass}/${value.index}`, 
+		id:Guid.raw(), 
+		source: `${config.deviceId}/${nodeid}/${comclass}/${value.index}`, 
 		hubid: config.deviceId,
 		nodeid:nodeid,
 		event_type: action, 
 		timestamp: Date.now(),
 		message_type: "zwave_sensor",
-
 		comclass:comclass,
 		index:value.index,
 		label: value.label, 
@@ -113,7 +114,6 @@ function registerSensor(nodeid){
 		event_type:'RegisterNode', 
 		timestamp: Date.now(),
 		message_type: "zwave_sensor",
-
 		node:node
 	});
 	zwaveBus.publish(registerSensorHub);
@@ -181,32 +181,73 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 // name: '',
 // loc: '' }
 
-var deviceConfig = {
-	2: [
-		[3, 50,  60, 2],
-		[3, 51,   5, 2],
-		[3, 52, 300, 2],
-	],
-	3: [
-		[3, 50,  60, 2],
-		[3, 51,   5, 2],
-		[3, 52, 300, 2],
-	],
-	4: [
-		[4, 50,  60, 2],
-		[4, 51,   5, 2],
-		[4, 52, 300, 2],
-	],
-	6: [
-		[6, 62,  10, 2],
-		[6, 64,   10, 2]
-	],
-	// 3: [
-	// 	[3, 64,          1, 1],
-	// 	[3, 40,          1, 1],
-	// 	[3, 41, 0x000A0100, 4]
-	// ]
-};
+var deviceConfig = {};
+fs.readFile("../device_config.json", function(err, buf) {
+	var buffer = buf.toString();
+	console.log("------------------ READING CONFIG -----------------------------")
+	console.log(buffer);
+	console.log("------------------ READING CONFIG -----------------------------")
+	deviceConfig = JSON.parse(buffer);
+});
+// var oppsett = 
+// {
+// 2: {
+// 50:[10,2],
+// 51:[1,2],
+// 52:[3600,2]
+// },
+// 3: {
+// 50:[10,2],
+// 51:[1,2],
+// 52:[3600,2]
+// },
+// 4: {
+// 50:[10,2],
+// 51:[1,2],
+// 52:[3600,2]
+// },
+// 9: {
+// 50:[10,2],
+// 51:[1,2],
+// 52:[3600,2]
+// },
+// }
+
+// var drift =
+// {
+// 	2: {
+// 		50:[300,2],
+// 		51:[0,2],
+// 		52:[3600,2],
+// 		54:[3,1],
+// 		55:[60,2],
+// 		56:[0,2]
+// 	},
+// 	3: {
+// 		50:[300,2],
+// 		51:[0,2],
+// 		52:[3600,2],
+// 		54:[3,1],
+// 		55:[60,2],
+// 		56:[0,2]
+// 	},
+// 	4: {
+// 		50:[300,2],
+// 		51:[0,2],
+// 		52:[3600,2],
+// 		54:[3,1],
+// 		55:[60,2],
+// 		56:[0,2]
+// 	},
+// 	9: {
+// 		50:[300,2],
+// 		51:[0,2],
+// 		52:[3600,2],
+// 		54:[3,1],
+// 		55:[60,2],
+// 		56:[0,2]
+// 	}
+// }
 
 /*
  * When a node is ready.
@@ -243,29 +284,33 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 					values[idx].value);
 		}
 	}
-	// console.log(nodes[3]);
-	// if(true){
-	// 	logger.debug("Setting config---------------------------------");
-	// 	var stats = zwave.getNodeStatistics('3');
-	// 	logger.debug(stats);
-	// 	zwave.setConfigParam(3, 64,          1, 1);
-	// 	zwave.setConfigParam(3, 40,          1, 1);
-	// 	zwave.setConfigParam(3, 41, 0x000A0100, 4);
-	// }
+	
 
 
 	if(deviceConfig[nodeid] ){
 		var config = deviceConfig[nodeid];
-		config.forEach(confItem => {
-			zwave.setConfigParam(confItem[0], confItem[1], confItem[2], confItem[3]);	
-		});
-		// zwave.setConfigParam(3, 50,  60, 2);
-		// zwave.setConfigParam(3, 51,   5, 2);
-		// zwave.setConfigParam(3, 52, 300, 2);
+		Object.keys(config).forEach(key=>{
+			zwave.setConfigParam(nodeid, key, config[key][0], config[key][1]);
+		})
+		// config.forEach(confItem => {
+		// 	zwave.setConfigParam(confItem[0], confItem[1], confItem[2], confItem[3]);	
+		// });
 	}
 };
 
-
+exports.setNodeConfig = function(command){
+	var nodeId = command.nodeid;
+	if(!deviceConfig[nodeId] 
+		|| command.clear){
+		deviceConfig[nodeId] = {};
+	}
+	deviceConfig[nodeId][command.commandclass] = [command.value, command.size];
+	fs.writeFile("../device_config.json", JSON.stringify(deviceConfig), function(err, data) {
+		if (err) console.log(err);
+		else console.log("Successfully Written to File.");
+	});
+	zwave.setConfigParam(command.nodeid, command.commandclass, command.value, command.size);
+}
 /*
  * When a notification is received.
  */
