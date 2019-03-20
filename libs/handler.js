@@ -9,6 +9,7 @@
 
 var constants = require('./constants');
 var Guid = require('guid');
+var fs = require("fs");
 // Initialize the node array
 var nodes = [];
 
@@ -180,32 +181,26 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 // name: '',
 // loc: '' }
 
-var deviceConfig = {
-	// 2: [
-	// 	[3, 50,  60, 2],
-	// 	[3, 51,   5, 2],
-	// 	[3, 52, 300, 2],
-	// ],
-	6: {
-		50:[60,2],
-		51:[5,2],
-		52:[300,2],
-	},
-	// 6: [
-	// 	[6, 50,  60, 2],
-	// 	[6, 51,   5, 2],
-	// 	[6, 52, 300, 2],
-	// ],
-	// 3: [
-	// 	[3, 64,          1, 1],
-	// 	[3, 40,          1, 1],
-	// 	[3, 41, 0x000A0100, 4]
-	// ],
-	7: [
-		[7, 62,  60, 2],
-		[7, 64,   60, 2],
-	],
-};
+var deviceConfig = {};
+fs.readFile("../device_config.json", function(err, buf) {
+	var buffer = buf.toString();
+	console.log(buffer);
+	deviceConfig = JSON.parse(buffer);
+});
+// {
+	
+// 	// 6: {
+// 	// 	50:[60,2],
+// 	// 	51:[5,2],
+// 	// 	52:[300,2],
+// 	// },
+	
+// 	// 7: {
+// 	// 	62: [60, 2],
+// 	// 	64: [60, 2],
+// 	// },
+// };
+
 
 /*
  * When a node is ready.
@@ -242,25 +237,17 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 					values[idx].value);
 		}
 	}
-	// console.log(nodes[3]);
-	// if(true){
-	// 	logger.debug("Setting config---------------------------------");
-	// 	var stats = zwave.getNodeStatistics('3');
-	// 	logger.debug(stats);
-	// 	zwave.setConfigParam(3, 64,          1, 1);
-	// 	zwave.setConfigParam(3, 40,          1, 1);
-	// 	zwave.setConfigParam(3, 41, 0x000A0100, 4);
-	// }
+	
 
 
 	if(deviceConfig[nodeid] ){
 		var config = deviceConfig[nodeid];
-		config.forEach(confItem => {
-			zwave.setConfigParam(confItem[0], confItem[1], confItem[2], confItem[3]);	
-		});
-		// zwave.setConfigParam(3, 50,  60, 2);
-		// zwave.setConfigParam(3, 51,   5, 2);
-		// zwave.setConfigParam(3, 52, 300, 2);
+		Object.keys(config).forEach(key=>{
+			zwave.setConfigParam(nodeid, key, config[key][0], config[key][1]);
+		})
+		// config.forEach(confItem => {
+		// 	zwave.setConfigParam(confItem[0], confItem[1], confItem[2], confItem[3]);	
+		// });
 	}
 };
 
@@ -268,9 +255,13 @@ exports.setNodeConfig = function(command){
 	var nodeId = command.nodeid;
 	if(!deviceConfig[nodeId] 
 		|| command.clear){
-		deviceConfig[nodeId] = [];
+		deviceConfig[nodeId] = {};
 	}
-	deviceConfig[nodeId].push([nodeId, command.commandclass, command.value, command.size])
+	deviceConfig[nodeId][command.commandclass] = [command.value, command.size];
+	fs.writeFile("../device_config.json", JSON.stringify(deviceConfig), function(err, data) {
+		if (err) console.log(err);
+		else console.log("Successfully Written to File.");
+	});
 	zwave.setConfigParam(command.nodeid, command.commandclass, command.value, command.size);
 }
 /*
