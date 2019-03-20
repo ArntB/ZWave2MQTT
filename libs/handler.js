@@ -88,13 +88,13 @@ function stopModeAfterTimeout(message) {
 function publishSensorEvent(nodeid,value, action, comclass){
 	var message = JSON.stringify(
 	{
-		id:Guid.raw(), source: `${config.deviceId}/${nodeid}/${comclass}/${value.index}`, 
+		id:Guid.raw(), 
+		source: `${config.deviceId}/${nodeid}/${comclass}/${value.index}`, 
 		hubid: config.deviceId,
 		nodeid:nodeid,
 		event_type: action, 
 		timestamp: Date.now(),
 		message_type: "zwave_sensor",
-
 		comclass:comclass,
 		index:value.index,
 		label: value.label, 
@@ -113,7 +113,6 @@ function registerSensor(nodeid){
 		event_type:'RegisterNode', 
 		timestamp: Date.now(),
 		message_type: "zwave_sensor",
-
 		node:node
 	});
 	zwaveBus.publish(registerSensorHub);
@@ -187,11 +186,16 @@ var deviceConfig = {
 	// 	[3, 51,   5, 2],
 	// 	[3, 52, 300, 2],
 	// ],
-	6: [
-		[6, 50,  60, 2],
-		[6, 51,   5, 2],
-		[6, 52, 300, 2],
-	],
+	6: {
+		50:[60,2],
+		51:[5,2],
+		52:[300,2],
+	},
+	// 6: [
+	// 	[6, 50,  60, 2],
+	// 	[6, 51,   5, 2],
+	// 	[6, 52, 300, 2],
+	// ],
 	// 3: [
 	// 	[3, 64,          1, 1],
 	// 	[3, 40,          1, 1],
