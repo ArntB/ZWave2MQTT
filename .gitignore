@@ -288,3 +288,5 @@ __pycache__/
 *.xsd.cs
 secret.js
 nohup.out
+device_config.json
+device_config_drift.json
