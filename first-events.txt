@@ -1,0 +1,5 @@
+9/14/2018 1:29:23 AM> Device: [hos_naboen_zhub], Data:[{"id":"bc35b2b7-3376-3da7-31ed-01c8e22c97ba","source":"hos_naboen_zhub/1/32/0","hubid":"hos_naboen_zhub","nodeid":1,"event_type":"AddValue","timestamp":1536880589188,"message_type":"zwave_sensor","comclass":32,"index":0,"label":"Basic","value":0}]Properties:
+'zwave': ''
+
+9/14/2018 1:29:24 AM> Device: [hos_naboen_zhub], Data:[{"id":"a1e250c4-bb1d-cd41-379b-b2a203b6dd4b","source":"hos_naboen_zhub/1","hubid":"hos_naboen_zhub","nodeid":1,"event_type":"RegisterNode","timestamp":1536880589216,"message_type":"zwave_sensor","node":{"manufacturer":"Z-Wave.Me","manufacturerid":"0x0147","product":"Unknown: type=0400, id=0002","producttype":"0x0400","productid":"0x0002","type":"Static PC Controller","name":"","loc":"","classes":{"32":{"0":{"value_id":"1-32-1-0","node_id":1,"class_id":32,"type":"byte","genre":"basic","instance":1,"index":0,"label":"Basic","units":"","help":"","read_only":false,"write_only":false,"min":0,"max":255,"is_polled":false,"value":0}}},"ready":true}}]Properties:
+'zwave': ''
