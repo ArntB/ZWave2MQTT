@@ -88,13 +88,13 @@ function stopModeAfterTimeout(message) {
 function publishSensorEvent(nodeid,value, action, comclass){
 	var message = JSON.stringify(
 	{
-		id:Guid.raw(), source: `${config.deviceId}/${nodeid}/${comclass}/${value.index}`, 
+		id:Guid.raw(), 
+		source: `${config.deviceId}/${nodeid}/${comclass}/${value.index}`, 
 		hubid: config.deviceId,
 		nodeid:nodeid,
 		event_type: action, 
 		timestamp: Date.now(),
 		message_type: "zwave_sensor",
-
 		comclass:comclass,
 		index:value.index,
 		label: value.label, 
@@ -113,7 +113,6 @@ function registerSensor(nodeid){
 		event_type:'RegisterNode', 
 		timestamp: Date.now(),
 		message_type: "zwave_sensor",
-
 		node:node
 	});
 	zwaveBus.publish(registerSensorHub);
@@ -182,21 +181,30 @@ exports.onValueRemoved = function(nodeid, comclass, index) {
 // loc: '' }
 
 var deviceConfig = {
-	2: [
-		[3, 50,  60, 2],
-		[3, 51,   5, 2],
-		[3, 52, 300, 2],
+	// 2: [
+	// 	[3, 50,  60, 2],
+	// 	[3, 51,   5, 2],
+	// 	[3, 52, 300, 2],
+	// ],
+	6: {
+		50:[60,2],
+		51:[5,2],
+		52:[300,2],
+	},
+	// 6: [
+	// 	[6, 50,  60, 2],
+	// 	[6, 51,   5, 2],
+	// 	[6, 52, 300, 2],
+	// ],
+	// 3: [
+	// 	[3, 64,          1, 1],
+	// 	[3, 40,          1, 1],
+	// 	[3, 41, 0x000A0100, 4]
+	// ],
+	7: [
+		[7, 62,  60, 2],
+		[7, 64,   60, 2],
 	],
-	5: [
-		[3, 50,  60, 2],
-		[3, 51,   5, 2],
-		[3, 52, 300, 2],
-	],
-	3: [
-		[3, 64,          1, 1],
-		[3, 40,          1, 1],
-		[3, 41, 0x000A0100, 4]
-	]
 };
 
 /*
@@ -256,7 +264,15 @@ exports.onNodeReady = function(nodeid, nodeinfo) {
 	}
 };
 
-
+exports.setNodeConfig = function(command){
+	var nodeId = command.nodeid;
+	if(!deviceConfig[nodeId] 
+		|| command.clear){
+		deviceConfig[nodeId] = [];
+	}
+	deviceConfig[nodeId].push([nodeId, command.commandclass, command.value, command.size])
+	zwave.setConfigParam(command.nodeid, command.commandclass, command.value, command.size);
+}
 /*
  * When a notification is received.
  */
